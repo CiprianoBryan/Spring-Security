@@ -57,6 +57,8 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 * PASSWORD-ENCODER is responsible for encoding the passwords.
 * SECURITY-CONTEXT is where the user information is stored for future.
 
+![image](https://user-images.githubusercontent.com/36827327/194742123-47d31c19-0ab7-43c9-9b06-0099c6bef383.png)
+
 -----------------------------------------------------------------------------------------
 
 # AUTENTICACIÓN BÁSICA
@@ -85,3 +87,11 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 * Quitamos del userDetailsService el seteo del PASSWORD-ENCODER, probamos y funciona correctamente.
 * El AUTHENTICATION-MANAGER automáticamente buscará un bean que está disponible y usará el PASSWORD-ENCODER que hace que funcione.
 * ¿Qué pasa si tu no configuras un bean, y no codificas la contraseña? Esto retornará un IllegalArgumentException, ya que el PASSWORD-ENCODER es obligatorio 
+5. Creamos un AUTHENTICATION-PROVIDER, implementamos el interface AuthenticationProvider el cual tiene 2 métodos (authenticate, suppots)
+* The Authentication tiene el username y password
+* retornamos como Authentication la clase UsernamePasswordAuthenticationToken con los parámetros userName, password, y la lista de autorizaciones el cuál en este caso es vacío.
+* Si la autorización falla retornamos un BadCredentialsException
+* Este AUTHENTICATION-PROVIDER responderá un UsernamePasswordAuthenticationToken al AUTHENTICATION-MANAGER, luego irá al AUTHENTICATION-FILTER. Si la autenticación es exitosa, almacenará el username y password en el SECURITY-CONTEXT. Si falla lanzará un BadCredentialsException y el usuario obtendrá un 401.
+* Nosotros debemos decir que cargamos el UsernamePasswordAuthenticationToken mediante el método supports. Así en tiempo de ejecución, el AUTHENTICATION-MANAGER envía este tipo de dato como autenticación.
+* El trabajo del AUTHENTICATION-MANAGER es ir mediante todos los PROVIDERS que estan disponibles para ayudar con el Basic Authentication o el UsernamePasswordAuthentication, cualquiera que indique que pueda hacerlo (supports return true) primero se usará.
+* No olvidar marcar la clase con la anotación @Component, sino no será escaneada.
