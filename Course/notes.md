@@ -72,7 +72,9 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 # AUTENTICACIÓN PERSONALIZADA
 
 1. WebSecurityConfigurerAdapter: Tiene 3 diferentes métodos de configuración que podemos sobreescribir.
+
 2. El primero toma una AuthenticationManagerBuilder: Esto nos permitirá personalizar el AUTHENTICATION-MANAGER así todos esos componentes pueden ser personalizados.
+
 3. Creamos nuestro MySecurityConfig con la anotación @Configuration y que extiende de WebSecurityConfigurerAdapter
 * Sobreescribimos el método void:configure(AuthenticationManagerBuilder auth), y void:configure(HttpSecurity http)
 * En void:configure(HttpSecurity http), colocamos http.authorizeRequests().anyRequest().authenticated() el cual significa que todas las peticiones que llegan a nuestra aplicación deberán ser autenticadas, solo entonces pueden acceder a los recursos, si además agregamos .permitAll() entonces cualquiera puede acceder a nuestra aplicación.
@@ -81,12 +83,14 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 * Al AuthenticationManagerBuilder le pasamos el USER-DETAILS-SERVICE y PASSWORD-ENCODER creados anteriormente.
 * Al usuario le añadimos una autoridad (authority)
 * Eliminamos el JSESSIONID y probamos el log in con el usuario/password tom/cruise.
+
 4. Extraemos nuestro PASSWORD-ENCODER
 * Creamos un @Bean passwordEncoder() que retorne el BCryptPasswordEncoder
 * Inyectamos con @Autowired un PasswordEncoder, y lo usamos dentro del AuthenticationManagerBuilder
 * Quitamos del userDetailsService el seteo del PASSWORD-ENCODER, probamos y funciona correctamente.
 * El AUTHENTICATION-MANAGER automáticamente buscará un bean que está disponible y usará el PASSWORD-ENCODER que hace que funcione.
 * ¿Qué pasa si tu no configuras un bean, y no codificas la contraseña? Esto retornará un IllegalArgumentException, ya que el PASSWORD-ENCODER es obligatorio 
+
 5. Creamos un AUTHENTICATION-PROVIDER, implementamos el interface AuthenticationProvider el cual tiene 2 métodos (authenticate, suppots)
 * The Authentication tiene el username y password
 * retornamos como Authentication la clase UsernamePasswordAuthenticationToken con los parámetros userName, password, y la lista de autorizaciones el cuál en este caso es vacío.
@@ -95,3 +99,9 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 * Nosotros debemos decir que cargamos el UsernamePasswordAuthenticationToken mediante el método supports. Así en tiempo de ejecución, el AUTHENTICATION-MANAGER envía este tipo de dato como autenticación.
 * El trabajo del AUTHENTICATION-MANAGER es ir mediante todos los PROVIDERS que estan disponibles para ayudar con el Basic Authentication o el UsernamePasswordAuthentication, cualquiera que indique que pueda hacerlo (supports return true) primero se usará.
 * No olvidar marcar la clase con la anotación @Component, sino no será escaneada.
+
+5. Podemos usar el formLogin, así se desplegará un form para el log in, introducimos el usuario/contraseña tom/cruise e ingresamos. (En navegador web)
+
+6. Si agregamos otro endpoint, al loguearnos en uno podemos hacer uso del otro, ya que quedamos autenticados
+* Cambiamos el anyRequest() por antMatchers("/hello") para indicar el endpoint que necesita Autenticación para realizar la petición. Si lo dejamos así, el resto de endpoints si podríamos acceder directamente.
+* Si añadimos .anyRequest().denyAll() entonces todos los request distintos al especificado en el antMatchers() estarán denegado su acceso (ni autenticándonos podríamos ingresar a esos endpoints)

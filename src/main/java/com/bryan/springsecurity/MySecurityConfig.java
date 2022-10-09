@@ -42,8 +42,8 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic();
-        http.authorizeRequests().anyRequest().authenticated();
+        http.formLogin();
+        http.authorizeRequests().antMatchers("/hello").authenticated().anyRequest().denyAll();
     }
 
     @Bean
