@@ -18,8 +18,10 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MyAuthenticationProvider authenticationProvider;
 
-    @Override
+    /*@Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         UserDetails user = User
                 .withUsername("tom")
@@ -31,6 +33,11 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
         userDetailsService.createUser(user);
 
         auth.userDetailsService(userDetailsService);
+    }*/
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider);
     }
 
     @Override
