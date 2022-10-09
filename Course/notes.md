@@ -105,3 +105,15 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 6. Si agregamos otro endpoint, al loguearnos en uno podemos hacer uso del otro, ya que quedamos autenticados
 * Cambiamos el anyRequest() por antMatchers("/hello") para indicar el endpoint que necesita Autenticación para realizar la petición. Si lo dejamos así, el resto de endpoints si podríamos acceder directamente.
 * Si añadimos .anyRequest().denyAll() entonces todos los request distintos al especificado en el antMatchers() estarán denegado su acceso (ni autenticándonos podríamos ingresar a esos endpoints)
+
+7. Crear nuestro AUTHENTICATION-FILTER (Servlet filters) y agregarlo al Spring Security Filter Chain
+* Creamos la clase MySecurityFilter implements Filter (javax.servlet.*) el cual implementaremos el método doFilter cuyos parámetros son ServletRequest, ServletResponse y FilterChain
+* EL FilterChain tendrá la información de todos los filtros Servlet, y lo aplicamos al request y response con chain.doFilter(request, response)
+* Podemos agregar lógica antes de aplicar el filtro (chain.doFilter()), esto se aplicará cuando el request está llegando al siguiente componente en la cadena
+  * En medio de AUTHENTICATION-FILTER ----> AUTHENTICATION-MANAGER
+* Podemos agregar lógica después de aplicar el filtro (chain.doFilter()), esto se aplicará cuando el response está devuelta del AuthenticationManager
+  * En medio de AUTHENTICATION-FILTER <---- AUTHENTICATION-MANAGER
+* Agregamos nuestro filtro al HttpSecurity, mediante el http.addFilterAfter(), 
+  * colocamos nuestro filtro en el primer parámetro (new MySecurityFilter()), 
+  * colocamos el BasicAuthenticationFilter.class como segundo parámetro, esto lo realizará después del primer filtro.
+  * Existen distintos filtros, como filtro basic authentication, filtro CSRF, etc. 
