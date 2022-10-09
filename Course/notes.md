@@ -77,3 +77,11 @@ When a End-user sends a request or a Restful-client sends the request to our Res
 * En void:configure(AuthenticationManagerBuilder auth), creamos nuestro USER-DETAILS-SERVICE como InMemoryUserDetailsManager, de esta forma almacenaremos la información de usuario en memoria.
 * También creamos nuestro PASSWORD-ENCODER como BCryptPasswordEncoder, y a las contraseñas de los usuarios lo codificamos con el método encode del objeto.
 * Al AuthenticationManagerBuilder le pasamos el USER-DETAILS-SERVICE y PASSWORD-ENCODER creados anteriormente.
+* Al usuario le añadimos una autoridad (authority)
+* Eliminamos el JSESSIONID y probamos el log in con el usuario/password tom/cruise.
+4. Extraemos nuestro PASSWORD-ENCODER
+* Creamos un @Bean passwordEncoder() que retorne el BCryptPasswordEncoder
+* Inyectamos con @Autowired un PasswordEncoder, y lo usamos dentro del AuthenticationManagerBuilder
+* Quitamos del userDetailsService el seteo del PASSWORD-ENCODER, probamos y funciona correctamente.
+* El AUTHENTICATION-MANAGER automáticamente buscará un bean que está disponible y usará el PASSWORD-ENCODER que hace que funcione.
+* ¿Qué pasa si tu no configuras un bean, y no codificas la contraseña? Esto retornará un IllegalArgumentException, ya que el PASSWORD-ENCODER es obligatorio 
