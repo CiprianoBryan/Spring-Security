@@ -117,3 +117,15 @@ When a End-user sends a request or a Restful-client sends the request to our Res
   * colocamos nuestro filtro en el primer parámetro (new MySecurityFilter()), 
   * colocamos el BasicAuthenticationFilter.class como segundo parámetro, esto lo realizará después del primer filtro.
   * Existen distintos filtros, como filtro basic authentication, filtro CSRF, etc. 
+
+# Spring Security Architecture
+
+![image](https://user-images.githubusercontent.com/36827327/194778467-b806d550-0104-4384-9eff-98365016633b.png)
+
+[Fuente](https://www.toptal.com/spring/spring-security-tutorial)
+
+# Spring Security JWT Architecture
+
+![image](https://user-images.githubusercontent.com/36827327/194795420-a435c1a4-98c0-4a29-89ab-dcb9db7426e7.png)
+
+[Fuente](https://www.bezkoder.com/spring-boot-jwt-mysql-spring-security-architecture/)
